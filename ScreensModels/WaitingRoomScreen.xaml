@@ -1,0 +1,31 @@
+﻿<Window x:Class="ClinicQueueManagement.ScreensModels.WaitingRoomScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Waiting Room - Clinic Appointments" Height="600" Width="1000">
+    <Grid Background="LightGray" Margin="50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <!-- Clinic Information -->
+            <ColumnDefinition Width="300" />
+            <!-- Logo and Time Section -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Clinic 1 Section -->
+        <Border Background="White" Padding="10" Margin="10" Grid.Column="0">
+            <StackPanel>
+                <TextBlock Text="Clinic 1" FontSize="28" FontWeight="Bold" Foreground="DarkBlue" TextAlignment="Center" />
+                <ListBox x:Name="Clinic1ListBox" FontSize="20" Width="400" Height="450" Foreground="Black" />
+            </StackPanel>
+        </Border>
+
+        <!-- Clinic 2 Section -->
+        <Border Background="White" Padding="10" Margin="10" Grid.Column="1">
+            <StackPanel>
+                <TextBlock Text="Clinic 2" FontSize="28" FontWeight="Bold" Foreground="DarkGreen" TextAlignment="Center" />
+                <ListBox x:Name="Clinic2ListBox" FontSize="20" Width="400" Height="450" Foreground="Black" />
+            </StackPanel>
+        </Border>
+
+       
+    </Grid>
+</Window>
