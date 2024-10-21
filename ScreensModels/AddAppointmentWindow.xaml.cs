@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using ClinicQueueManagement.Data;
 
 namespace ClinicQueueManagement
@@ -18,65 +16,76 @@ namespace ClinicQueueManagement
 			_queueManager = new QueueManager();  // Initialize QueueManager for managing appointments
 		}
 
-		private void AppointmentTimeTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			// TextBox logic can be added here if needed
-		}
-
-		// Clinic 1 Button click handler
-		private void Clinic1Button_Click(object sender, RoutedEventArgs e)
+		// Common logic to handle adding appointments for any room
+		private void AddAppointment(int roomNumber)
 		{
 			string inputTime = AppointmentTimeTextBox.Text;
 
-			// Validate the input time format (valid times are between 07:00 and 23:59)
-			if (ValidateTime(inputTime))
+			if (ValidateTime(inputTime))  // Validate the time input
 			{
-				// Parse the valid time input
 				DateTime appointmentTime = DateTime.Parse(inputTime);
-
-				// Generate a unique appointment number (between 100 and 1000)
-				int appointmentNumber = GenerateAppointmentNumber();
-
+				
+				int appointmentNumber = CalculateAppointmentNumber(appointmentTime);
 				// Create a new appointment object
 				Appointment newAppointment = new Appointment
 				{
 					AppointmentID = appointmentNumber,
-					PatientName = "Patient",
+					PatientName = "Patient",  // This could be customized
 					AppointmentTime = appointmentTime,
+					RoomNumber = roomNumber,  // Assign selected room
 					IsCompleted = false
 				};
 
-				// Add the appointment to the Min-Heap (priority queue) managed by QueueManager
+				// Add to the Min-Heap (priority queue)
 				_queueManager.AddAppointment(newAppointment);
 
-				// Save the appointment to the database (via DataAccess) after it is queued
-				_dataAccess.SaveAppointmentToDatabase(appointmentTime, appointmentNumber, "Clinic 1");
+				// Save the appointment to the database
+				_dataAccess.SaveAppointmentToDatabase(appointmentTime, appointmentNumber, roomNumber);
 
-				// Display confirmation message
-				MessageBox.Show($"Appointment created for Clinic 1 with number: {appointmentNumber} at {appointmentTime}");
+				MessageBox.Show($"Appointment created for Room {roomNumber} with number: {appointmentNumber} at {appointmentTime}");
 			}
 			else
 			{
-				// Show an error message if the time input is invalid
-				MessageBox.Show("Invalid time format. Please enter a time between 07:00 and 23:59.");
+				MessageBox.Show("Invalid time format. Please enter a time in HH:mm format.");
 			}
 		}
 
-		// Validates the time input format using regular expressions
-		// Ensures the time is between 07:00 and 23:59 in HH:mm format
-		private bool ValidateTime(string time)
+		// Button click handlers for each room
+		private void Clinic1Button_Click(object sender, RoutedEventArgs e)
 		{
-			// Regular expression to match time in HH:mm format, only between 07:00 and 23:59
-			Regex timeFormat = new Regex(@"^(0[7-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
-			return timeFormat.IsMatch(time);
+			AddAppointment(1);  // Room 1
 		}
 
-		// Generates a unique appointment number between 100 and 1000
-		// Used for assigning a unique identifier to each appointment
-		private int GenerateAppointmentNumber()
+		private void Clinic2Button_Click(object sender, RoutedEventArgs e)
 		{
-			Random random = new Random();
-			return random.Next(100, 1001);
+			AddAppointment(2);  // Room 2
+		}
+
+		private void Clinic3Button_Click(object sender, RoutedEventArgs e)
+		{
+			AddAppointment(3);  // Room 3
+		}
+
+		private void Clinic4Button_Click(object sender, RoutedEventArgs e)
+		{
+			AddAppointment(4);  // Room 4
+		}
+
+		// Method to validate the input time
+		private bool ValidateTime(string time)
+		{
+			return DateTime.TryParse(time, out _);  // Simple validation, could be extended
+		}
+
+	
+
+		// Method to calculate appointment number based on time
+		private int CalculateAppointmentNumber(DateTime appointmentTime)
+		{
+			DateTime startOfDay = new DateTime(appointmentTime.Year, appointmentTime.Month, appointmentTime.Day, 8, 0, 0); // Start at 08:00 AM
+			TimeSpan timeDifference = appointmentTime - startOfDay;
+			int appointmentNumber = 100 + (int)(timeDifference.TotalMinutes / 5);  // Increment by 1 every 5 minutes
+			return appointmentNumber;
 		}
 	}
 }

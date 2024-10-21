@@ -8,9 +8,63 @@
         Title="AddAppointmentWindow" Height="450" Width="800">
     <Grid>
         <Grid>
-            <Label Content="Appointment Time:" HorizontalAlignment="Left" Margin="115,126,0,0" VerticalAlignment="Top" Height="23" Width="140"/>
-            <TextBox x:Name="AppointmentTimeTextBox" HorizontalAlignment="Left" Margin="260,129,0,0" TextWrapping="Wrap" Text="00:00" VerticalAlignment="Top" Width="200" Height="23" TextChanged="AppointmentTimeTextBox_TextChanged"/>
-            <Button Content="Clinic 1" HorizontalAlignment="Left" Margin="160,219,0,0" VerticalAlignment="Top" Width="105" Height="45" ClickMode="Press" Click="Clinic1Button_Click"/>
+            <Label Content="שעת התור:" 
+                   HorizontalAlignment="Left" 
+                   Margin="115,126,0,0" 
+                   VerticalAlignment="Top" 
+                   Height="23" 
+                   Width="140" Padding="40,5,5,5"/>
+            <TextBox x:Name="AppointmentTimeTextBox" 
+                     HorizontalAlignment="Left" 
+                     Margin="260,129,0,0" 
+                     TextWrapping="Wrap" Text="00:00" 
+                     VerticalAlignment="Top" 
+                     Width="65" 
+                     Height="23" 
+                   />
+           
+           <TextBox x:Name="RoomNumTextBox" 
+              HorizontalAlignment="Left" 
+              Margin="260,154,0,0" 
+              TextWrapping="Wrap" Text="0" 
+              VerticalAlignment="Top" 
+              Width="65" 
+              Height="23" 
+             />
+  <Button Content="חדר 1" 
+                    HorizontalAlignment="Left" 
+                    Margin="160,219,0,0" 
+                    VerticalAlignment="Top" 
+                    Width="105" 
+                    Height="45" 
+                    ClickMode="Press" 
+                    Click="Clinic1Button_Click"/>
+
+            <Button Content="חדר 2" 
+             HorizontalAlignment="Left" 
+             Margin="305,219,0,0" 
+             VerticalAlignment="Top" 
+             Width="105" 
+             Height="45" 
+             ClickMode="Press" 
+             Click="Clinic2Button_Click" BorderThickness="1,1,1,1"/>
+            <Button Content="חדר 3" 
+                HorizontalAlignment="Left" 
+                Margin="455,219,0,0" 
+                VerticalAlignment="Top" 
+                Width="105" 
+                Height="45" 
+                ClickMode="Press" 
+                Click="Clinic3Button_Click" BorderThickness="1,1,1,1"/>
+            <Button Content="חדר 4" 
+                HorizontalAlignment="Left" 
+                Margin="595,219,0,0" 
+                VerticalAlignment="Top" 
+                Width="105" 
+                Height="45" 
+                ClickMode="Press" 
+                Click="Clinic4Button_Click" BorderThickness="1,1,1,1"/>
+
         </Grid>
 
     </Grid>

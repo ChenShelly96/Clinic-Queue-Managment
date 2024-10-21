@@ -9,7 +9,7 @@ namespace ClinicQueueManagement.Data
 
 		private const string ConnectionString = "Server=DESKTOP-CHEN\\MSSQLSERVER01;Database=MyClinicDB;Trusted_Connection=True";
 		// Method to save an appointment to the database
-		public void SaveAppointmentToDatabase(DateTime appointmentTime, int appointmentNumber, string clinic)
+		public void SaveAppointmentToDatabase(DateTime appointmentTime, int appointmentNumber, int roomNumber)
 		{
 			// Connection string for the SQL Server instance and database
 			//string connectionString = "Server=DESKTOP-CHEN\\MSSQLSERVER01;Database=MyClinicDB;Trusted_Connection=True";
@@ -20,7 +20,8 @@ namespace ClinicQueueManagement.Data
 				connection.Open();
 
 				// SQL query to insert the appointment into the Appointments table
-				string query = "INSERT INTO Appointments (AppointmentID, PatientName, AppointmentTime, IsCompleted) VALUES (@AppointmentID, 'Patient', @AppointmentTime, 0)";
+				string query = "INSERT INTO Appointments (AppointmentID, PatientName, AppointmentTime, IsCompleted, RoomNumber)" +
+					" VALUES (@AppointmentID, 'Patient', @AppointmentTime,0, @RoomNumber)";
 
 				// Prepare and execute the SQL command
 				using (SqlCommand command = new SqlCommand(query, connection))
@@ -28,50 +29,66 @@ namespace ClinicQueueManagement.Data
 					// Add parameters to the command to avoid SQL injection
 					command.Parameters.AddWithValue("@AppointmentID", appointmentNumber);
 					command.Parameters.AddWithValue("@AppointmentTime", appointmentTime);
-
+					command.Parameters.AddWithValue("@RoomNumber", roomNumber);
 					// Execute the command
 					command.ExecuteNonQuery();
 				}
 			}
 		}
 
-			// Method to load appointments for the current day from the database
-			public List<Appointment> LoadAppointmentsFromDatabaseForToday()
+		// Method to load appointments for the current day from the database
+		public List<Appointment> LoadAppointmentsFromDatabaseForToday()
+		{
+			List<Appointment> appointments = new List<Appointment>();
+
+			// Use the constant ConnectionString
+			using (SqlConnection connection = new SqlConnection(ConnectionString))
 			{
-				List<Appointment> appointments = new List<Appointment>();
+				connection.Open();
 
-				// Use the constant ConnectionString
-				using (SqlConnection connection = new SqlConnection(ConnectionString))
+				// SQL query to select appointments for today
+				string query = "SELECT AppointmentID, PatientName, AppointmentTime, IsCompleted FROM Appointments WHERE CAST(AppointmentTime AS DATE) = CAST(GETDATE() AS DATE)";
+
+				using (SqlCommand command = new SqlCommand(query, connection))
 				{
-					connection.Open();
-
-					// SQL query to select appointments for today
-					string query = "SELECT AppointmentID, PatientName, AppointmentTime, IsCompleted FROM Appointments WHERE CAST(AppointmentTime AS DATE) = CAST(GETDATE() AS DATE)";
-
-					using (SqlCommand command = new SqlCommand(query, connection))
+					using (SqlDataReader reader = command.ExecuteReader())
 					{
-						using (SqlDataReader reader = command.ExecuteReader())
+						while (reader.Read())
 						{
-							while (reader.Read())
+							Appointment appointment = new Appointment
 							{
-								Appointment appointment = new Appointment
-								{
-									AppointmentID = (int)reader["AppointmentID"],
-									PatientName = (string)reader["PatientName"],
-									AppointmentTime = (DateTime)reader["AppointmentTime"],
-									IsCompleted = (bool)reader["IsCompleted"]
-								};
+								AppointmentID = (int)reader["AppointmentID"],
+								PatientName = (string)reader["PatientName"],
+								AppointmentTime = (DateTime)reader["AppointmentTime"],
+								IsCompleted = (bool)reader["IsCompleted"]
+							};
 
-								appointments.Add(appointment); // Add each appointment to the list
-							}
+							appointments.Add(appointment); // Add each appointment to the list
 						}
 					}
 				}
+			}
 
-				return appointments;
+			return appointments;
+		}
+
+		public void ClearAppointmentsTable()
+		{
+			using (SqlConnection connection = new SqlConnection(ConnectionString))
+			{
+				connection.Open();
+				string query = "DELETE FROM Appointments";
+				using (SqlCommand command = new SqlCommand(query, connection))
+				{
+					command.ExecuteNonQuery();
+				}
 			}
 		}
 
-
 	}
+
+
+}
+
+
 

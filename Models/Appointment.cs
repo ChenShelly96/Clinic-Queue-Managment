@@ -12,5 +12,7 @@ namespace ClinicQueueManagement.Models
 		public string PatientName { get; set; }
 		public DateTime AppointmentTime { get; set; }
 		public bool IsCompleted { get; set; }
+
+		public int RoomNumber { get; set; }
 	}
 }
