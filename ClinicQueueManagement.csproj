@@ -123,11 +123,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>.gitignore</DependentUpon>
-    </Compile>
     <Compile Include="ScreensModels\ClinicRoomScreen.xaml.cs">
       <DependentUpon>ClinicRoomScreen.xaml</DependentUpon>
     </Compile>
@@ -150,7 +145,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\DataAccess.cs" />
-    <Compile Include="Data\DatabaseTester.cs" />
     <Compile Include="Data\DbContext.cs" />
     <Compile Include="Data\QueueManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -168,7 +162,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Appointment.cs" />
-    <Compile Include="program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -187,7 +180,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="appsettings.json" />
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="EF.Reverse.POCO.v3.ttinclude" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
