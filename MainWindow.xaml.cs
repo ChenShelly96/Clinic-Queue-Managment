@@ -1,36 +1,21 @@
 ﻿using ClinicQueueManagement.Data;
 using ClinicQueueManagement.ScreensModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace ClinicQueueManagement
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window
 	{
 		private QueueManager _queueManager;
 		private DispatcherTimer _dailyCleanupTimer;
 		private DataAccess _dataAccess;
+
 		public MainWindow()
 		{
 			InitializeComponent();
 			_queueManager = new QueueManager();
-
 
 			// Schedule daily cleanup at 21:00
 			_dailyCleanupTimer = new DispatcherTimer();
@@ -42,9 +27,8 @@ namespace ClinicQueueManagement
 		private void AddAppointmentButton_Click(object sender, RoutedEventArgs e)
 		{
 			AddAppointmentWindow addAppointmentWindow = new AddAppointmentWindow();
-			addAppointmentWindow.Show(); 
+			addAppointmentWindow.Show();
 		}
-
 
 		// Opens the Waiting Room Screen
 		private void OpenWaitingRoomScreenButton_Click(object sender, RoutedEventArgs e)
@@ -53,7 +37,6 @@ namespace ClinicQueueManagement
 			WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(_queueManager);
 			waitingRoomScreen.Show();
 		}
-
 
 		// Calculate the time remaining until 21:00 today
 		private TimeSpan GetTimeUntilCleanup()
@@ -76,6 +59,14 @@ namespace ClinicQueueManagement
 
 			// Reset the timer for the next day
 			_dailyCleanupTimer.Interval = TimeSpan.FromHours(24);
+		}
+
+		private void OpenClinicRoomScreenButton_Click(object sender, RoutedEventArgs e)
+		{
+			// Pass the room number to the ClinicRoomScreen
+			int roomNumber = 1;  // For example, room 1
+			ClinicRoomScreen clinicRoomScreen = new ClinicRoomScreen(_queueManager, roomNumber);
+			clinicRoomScreen.Show();
 		}
 	}
 }

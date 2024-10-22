@@ -57,16 +57,18 @@ namespace ClinicQueueManagement.ScreensModels
 		// Load the next 20 appointments from the Min-Heap (priority queue) and display them per clinic
 		private void LoadAppointments()
 		{
-			// Clear existing items in Clinic 1
-			Clinic1ListBox.Items.Clear();
+
+
+			// Clear existing items in the Clinic 1 DataGrid
+			Clinic1DataGrid.ItemsSource = null;
 
 			// Load appointments and sort them by clinic
 			List<Appointment> nextAppointments = _queueManager.GetNextAppointments();
 
-			foreach (var appointment in nextAppointments)
-			{
-				Clinic1ListBox.Items.Add($" {appointment.AppointmentID}");
-			}
+			// Bind the appointment list to the DataGrid
+			Clinic1DataGrid.ItemsSource = nextAppointments;
+
+			
 		}
 
 		// Refresh button to reload the queue manually

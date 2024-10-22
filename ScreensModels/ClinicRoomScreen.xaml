@@ -1,0 +1,41 @@
+﻿<Window x:Class="ClinicQueueManagement.ScreensModels.ClinicRoomScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Clinic Room Screen" Height="600" Width="800">
+
+    <Grid Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header for the screen -->
+        <TextBlock Text="חדר X - ניהול תורים" 
+                   FontSize="28" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top" 
+                   Margin="10"/>
+
+        <!-- Queue List -->
+        <DataGrid x:Name="RoomQueueDataGrid" 
+                  AutoGenerateColumns="False" 
+                  Grid.Row="1" 
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="מספר תור" Binding="{Binding AppointmentID}" Width="*" />
+                <DataGridTextColumn Header="שם מטופל" Binding="{Binding PatientName}" Width="*" />
+                <DataGridTextColumn Header="זמן התור" Binding="{Binding AppointmentTime}" Width="*" />
+             
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Section for Current Appointment and IsCompleted Checkbox -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="10">
+            <TextBlock Text="מספר תור כעת: " FontSize="20" VerticalAlignment="Center"/>
+            <TextBlock x:Name="CurrentAppointmentTextBlock" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="5"/>
+            <CheckBox x:Name="IsCompletedCheckBox" Content="סמן כהסתיים" FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <Button Content="הבא בתור" Width="100" Height="30" Margin="10" Click="NextPatientButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

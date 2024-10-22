@@ -12,3 +12,6 @@
 
 # Other necessary ignores
 *.vscode/
+
+# Ignore the appsettings.json file
+appsettings.json

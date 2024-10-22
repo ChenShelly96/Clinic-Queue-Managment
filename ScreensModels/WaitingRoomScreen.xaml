@@ -15,9 +15,9 @@
                 BorderBrush="DarkBlue" 
                 BorderThickness="2" 
                 Padding="10" 
-                Margin="10" 
+                Margin="10,10,40,10"
                 Grid.Column="0" 
-                RenderTransformOrigin="0.417,0.494">
+                RenderTransformOrigin="0.417,0.494" Grid.ColumnSpan="2">
             <StackPanel>
                 <TextBlock Text="Clinic 1" 
                            FontSize="28" 
@@ -26,20 +26,32 @@
                            Padding="5"
                            Foreground="DarkBlue" 
                            Background="White" />
-                <ListBox x:Name="Clinic1ListBox" 
-                         FontSize="80" 
-                         Width="250" 
-                         Height="754"
-                         Foreground="Black" 
-                         Background="White" 
-                         BorderBrush="DarkBlue" 
-                         BorderThickness="1" 
-                         HorizontalContentAlignment="Center" 
-                         Margin="30,30,30,30" />
+
+                <DataGrid x:Name="Clinic1DataGrid" 
+              AutoGenerateColumns="False" 
+              FontSize="16" 
+              Width="594" 
+              Height="840"
+              Foreground="Black" 
+              Background="White" 
+              BorderBrush="DarkBlue" 
+              BorderThickness="1" 
+              HorizontalContentAlignment="Center" 
+              RenderTransformOrigin="0.417,-0.914" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Room Number" Binding="{Binding RoomNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Queue Number" Binding="{Binding AppointmentID}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+
+
+
+                <!-- DataGrid to display the queue with room and appointment numbers -->
             </StackPanel>
         </Border>
 
-        <!-- Clinic 2 Section -->
+        <!-- Clinic 2 Section 
         <Border Background="AliceBlue" 
                 BorderBrush="DarkGreen" 
                 BorderThickness="2" 
@@ -67,6 +79,7 @@
                          Margin="30,30,30,30"/>
             </StackPanel>
         </Border>
+        -->
 
         <!-- Clock Section -->
         <StackPanel Grid.Column="1" 
