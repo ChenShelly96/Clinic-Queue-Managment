@@ -34,8 +34,12 @@ namespace ClinicQueueManagement
 		private void OpenWaitingRoomScreenButton_Click(object sender, RoutedEventArgs e)
 		{
 			// Open the Waiting Room Screen, passing the queue manager to display the queue
-			WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(_queueManager);
-			waitingRoomScreen.Show();
+			//WaitingRoomScreen waitingRoomScreen = new WaitingRoomScreen(_queueManager);
+			//waitingRoomScreen.Show();
+
+
+			WaitingRoomScreen2 w2 = new WaitingRoomScreen2(_queueManager);
+			w2.Show();
 		}
 
 		// Calculate the time remaining until 21:00 today
