@@ -1,148 +1,159 @@
 ﻿<Window x:Class="ClinicQueueManagement.ScreensModels.WaitingRoomScreen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Waiting Room - Clinic Appointments" Height="965" Width="1290" HorizontalAlignment="Left">
-    <Grid Background="LightGray" Margin="50,5,10,4">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Waiting Room - Clinic Appointments"
+        Height="965" Width="1290"
+        Background="#A2D3D1">
+
+    <!-- Define the Material Design palette -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme 
+                    BaseTheme="Light"
+                 />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid x:Name="NowQueueTextBlock" Margin="50,5,10,4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350" />
-            <!-- Fixed width for Clinic 1 column -->
-            <ColumnDefinition Width="350" />
-            <!-- Fixed width for Clinic 2 column -->
+            <ColumnDefinition Width="375" />
+            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Clinic 1 Section -->
-        <Border Background="AliceBlue" 
-                BorderBrush="DarkBlue" 
-                BorderThickness="2" 
-                Padding="10" 
-                Margin="10,10,40,10"
-                Grid.Column="0" 
-                RenderTransformOrigin="0.417,0.494" Grid.ColumnSpan="2">
+        <Border Background="{DynamicResource MaterialDesignPaper}"
+                CornerRadius="10"
+                Padding="20"
+                Margin="20,10,10,10"
+                Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel>
-                <TextBlock Text="Clinic 1" 
-                           FontSize="28" 
-                           FontWeight="Bold" 
-                           TextAlignment="Center" 
-                           Padding="5"
-                           Foreground="DarkBlue" 
-                           Background="White" />
+                <TextBlock Text="Mammograph Raanana"
+                           FontSize="32"
+                           
+                           FontWeight="Bold"
+                           Foreground="#4A4F54"
+                           TextAlignment="Center"
+                           Margin="0,0,0,20"/>
 
-                <DataGrid x:Name="Clinic1DataGrid" 
-              AutoGenerateColumns="False" 
-              FontSize="16" 
-              Width="594" 
-              Height="840"
-              Foreground="Black" 
-              Background="White" 
-              BorderBrush="DarkBlue" 
-              BorderThickness="1" 
-              HorizontalContentAlignment="Center" 
-              RenderTransformOrigin="0.417,-0.914" >
+                <DataGrid x:Name="Clinic1DataGrid"
+                          AutoGenerateColumns="False"
+                          FontSize="18"
+                          Width="460"
+                          Height="600"
+                          Foreground="#4A4F54"
+                          Background="#d3eaea"
+                          BorderBrush="#2B6D70"
+                          BorderThickness="1"
+                          HorizontalContentAlignment="Center"
+                          VerticalAlignment="Top"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Room Number" Binding="{Binding RoomNumber}" Width="*"/>
-                        <DataGridTextColumn Header="Queue Number" Binding="{Binding AppointmentID}" Width="*"/>
+                        <DataGridTextColumn Header="מספר חדר" Binding="{Binding RoomNumber}" Width="*" />
+                        <DataGridTextColumn Header="מספר תור" Binding="{Binding AppointmentID}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
-
-
-
-
-                <!-- DataGrid to display the queue with room and appointment numbers -->
             </StackPanel>
         </Border>
 
-        <!-- Clinic 2 Section 
-        <Border Background="AliceBlue" 
-                BorderBrush="DarkGreen" 
-                BorderThickness="2" 
-                Padding="10" 
-                Margin="10" 
-                Grid.Column="1">
-            <StackPanel>
-                <TextBlock Text="Clinic 2" 
-                           FontSize="28" 
-                           FontWeight="Bold" 
-                           Foreground="DarkGreen" 
-                           Background="White" 
-                           TextAlignment="Center" 
-                           Padding="5"/>
-                <ListBox x:Name="Clinic2ListBox" 
-                         FontSize="80" 
-                         Width="250" 
-                         Height="754" 
-                         Foreground="Black" 
-                         Background="White" 
-                         BorderBrush="DarkGreen" 
-                         BorderThickness="1"
-                         HorizontalAlignment="Center" 
-                         HorizontalContentAlignment="Center"
-                         Margin="30,30,30,30"/>
-            </StackPanel>
-        </Border>
-        -->
-
-        <!-- Clock Section -->
-        <StackPanel Grid.Column="1" 
-                    VerticalAlignment="Top" 
-                    HorizontalAlignment="Right" 
-                    Margin="0,14,-425,0" 
-                    Width="320" 
-                    Height="155" RenderTransformOrigin="0.122,0.516">
-            <!-- Date Display -->
-            <TextBlock x:Name="DateTextBlock" 
-                       FontSize="28" 
+        <!-- Clock and Date Section -->
+        <StackPanel Grid.Column="2"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    Margin="0,14,30,0"
+                    Width="320"
+                    Height="220">
+            <TextBlock x:Name="DateTextBlock"
+                       FontSize="32"
                        FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryHueDarkBrush}"
                        TextAlignment="Center"
-                       Foreground="Black" 
-                       Background="LightYellow" 
-                       HorizontalAlignment="Center" Width="320"/>
+                       Margin="0,10,0,10"/>
 
-            <!-- Day of the Week Display -->
-            <TextBlock x:Name="DayTextBlock" 
-                       FontSize="28" 
+            <TextBlock x:Name="DayTextBlock"
+                       FontSize="28"
                        FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryHueMidBrush}"
                        TextAlignment="Center"
-                       Foreground="Black" 
-                       Background="LightYellow" 
-                       HorizontalAlignment="Center" Width="320"/>
+                       Margin="0,10,0,10"/>
 
-            <!-- Clock Display -->
-            <TextBlock x:Name="ClockTextBlock" 
-                       FontSize="32" 
+            <TextBlock x:Name="ClockTextBlock"
+                       FontSize="36"
                        FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryHueMidBrush}"
                        TextAlignment="Center"
-                       Foreground="Black" 
-                       Background="LightYellow" 
-                       HorizontalAlignment="Center" Width="320"/>
+                       Margin="0,10,0,10"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" 
+                    Margin="60,414,80,31"
+                    RenderTransformOrigin="0.542,-0.102">
+            <TextBlock TextWrapping="Wrap" 
+                       Text="כעת בתור" 
+                       Height="75"
+                       FontSize="28"
+                    FontWeight="Bold" Width="569" HorizontalAlignment="Center" TextAlignment="Center"/>
+            <TextBlock x:Name="NowQueueTextBlock1" 
+                TextWrapping="Wrap" 
+                       Height="160"
+                       Text=""
+                        FontSize="28"
+                        FontWeight="Bold" Width="569" 
+                       HorizontalAlignment="Center" 
+                       TextAlignment="Center"/>
         </StackPanel>
 
 
-        <!-- Now Section -->
-        <Grid Grid.Column="1" 
-              VerticalAlignment="Top" 
-              HorizontalAlignment="Right" 
-              Margin="0,224,-485,0" 
-              Width="460" 
-              Height="335" 
-              Background="White">
+        
+        <!-- Now Section 
+        <Grid Grid.Column="2"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Right"
+              Margin="0,307,25,0"
+              Width="445"
+              Height="481"
+              Background="{DynamicResource MaterialDesignPaper}" RenderTransformOrigin="0.662,0.565"
+             
+              >
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.073"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="כעת" 
-                       FontSize="28" 
-                       FontWeight="Bold" 
-                       Foreground="Black" 
-                       HorizontalAlignment="Center"
-                       Grid.Row="0" Margin="0,5,0,0"/>
-
-            <TextBlock x:Name="NowQueueTextBlock" 
-                       FontSize="28" 
+            <TextBlock Text="כעת בתור"
+                       FontSize="28"
                        FontWeight="Bold"
-                       Foreground="DarkBlue" 
-                       HorizontalAlignment="Center"
-                       Grid.Row="1" Margin="0,5,0,0"/>
-        </Grid>
+                       Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                       HorizontalAlignment="Left"
+                       Margin="142,5,0,17" RenderTransformOrigin="0.578,0.893"/>
+
+            <TextBlock x:Name="NowQueueTextBlock"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource PrimaryHueMidBrush}"
+                       HorizontalAlignment="Left"
+                       Margin="209,3,0,-226" RenderTransformOrigin="0.255,3.339" Width="435" Grid.Row="1">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="-1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform X="14.7"/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+        </Grid>-->
     </Grid>
 </Window>

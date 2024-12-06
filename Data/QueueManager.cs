@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using ClinicQueueManagement.Data;
 
 namespace ClinicQueueManagement.Data
 {
@@ -13,6 +12,8 @@ namespace ClinicQueueManagement.Data
 		private DataAccess _dataAccess; // Object to interact with the database
 		private Timer _updateTimer; // Timer for updating the appointments every 20 seconds
 		private Timer _cleanupTimer; // Timer for clearing appointments daily at 21:00
+
+		public event Action AppointmentsUpdated; // Event to notify about appointment updates
 
 		public QueueManager()
 		{
@@ -29,12 +30,12 @@ namespace ClinicQueueManagement.Data
 			ScheduleDailyCleanup();
 		}
 
-
 		// Method to get appointments for a specific room
 		public List<Appointment> GetAppointmentsForRoom(int roomNumber)
 		{
 			return _appointmentsHeap.Where(a => a.RoomNumber == roomNumber).ToList();
 		}
+
 		// Method to mark an appointment as completed and remove it from the heap and database
 		public void MarkAppointmentAsCompleted(Appointment appointment)
 		{
@@ -46,6 +47,9 @@ namespace ClinicQueueManagement.Data
 
 			// Update the database (remove or mark as completed)
 			_dataAccess.MarkAppointmentCompletedInDatabase(appointment.AppointmentID);
+			_dataAccess.RemoveAppointmentFromDatabase(appointment.AppointmentID);
+			// Notify listeners about the update
+			AppointmentsUpdated?.Invoke();
 		}
 
 		// Schedule daily cleanup at 21:00
@@ -67,6 +71,9 @@ namespace ClinicQueueManagement.Data
 		{
 			_dataAccess.ClearAppointmentsTable(); // Clear all appointments from the database
 			_appointmentsHeap.Clear(); // Clear the Min-Heap locally as well
+
+			// Notify listeners about the update
+			AppointmentsUpdated?.Invoke();
 		}
 
 		// Timer callback method to refresh appointments every 20 seconds
@@ -80,6 +87,9 @@ namespace ClinicQueueManagement.Data
 		{
 			_appointmentsHeap.Add(appointment);
 			HeapifyUp(_appointmentsHeap.Count - 1); // Ensure the Min-Heap property is maintained
+
+			// Notify listeners about the update
+			AppointmentsUpdated?.Invoke();
 		}
 
 		// Method to retrieve the next 20 appointments from the Min-Heap, sorted by time
@@ -87,7 +97,7 @@ namespace ClinicQueueManagement.Data
 		{
 			List<Appointment> sortedAppointments = new List<Appointment>(_appointmentsHeap);
 			sortedAppointments.Sort((a, b) => a.AppointmentTime.CompareTo(b.AppointmentTime));  // Sort by appointment time
-			return sortedAppointments.Count > 20 ? sortedAppointments.GetRange(0, 20) : sortedAppointments;
+			return sortedAppointments.Take(20).ToList(); // Return up to 20 appointments
 		}
 
 		// Method to remove the appointment with the earliest time (Root of the heap)
@@ -100,6 +110,9 @@ namespace ClinicQueueManagement.Data
 			_appointmentsHeap[0] = _appointmentsHeap[_appointmentsHeap.Count - 1];
 			_appointmentsHeap.RemoveAt(_appointmentsHeap.Count - 1);
 			HeapifyDown(0);
+
+			// Notify listeners about the update
+			AppointmentsUpdated?.Invoke();
 
 			return earliest;
 		}
@@ -118,8 +131,20 @@ namespace ClinicQueueManagement.Data
 			{
 				AddAppointment(appointment);
 			}
+
+			// Notify listeners about the update
+			AppointmentsUpdated?.Invoke();
+		}
+		// Method to generate the appointment number based on the room number and time
+		public int GenerateAppointmentNumber(int roomNumber, DateTime appointmentTime)
+		{
+			// The first appointment starts with roomNumber * 100 (e.g., 1 -> 100, 2 -> 200)
+			int baseNumber = roomNumber * 100;
+			int sequenceNumber = _appointmentsHeap.Count(a => a.RoomNumber == roomNumber) + 1;
+			return baseNumber + sequenceNumber;
 		}
 
+		/*
 		// Method to generate the appointment number based on the time of the day
 		public int GenerateAppointmentNumber(DateTime appointmentTime)
 		{
@@ -131,7 +156,7 @@ namespace ClinicQueueManagement.Data
 			// Calculate how many 5-minute intervals have passed since 08:00
 			int appointmentNumber = baseNumber + (int)(timeDifference.TotalMinutes / 5);
 			return appointmentNumber;
-		}
+		}*/
 
 		// Method to maintain the Min-Heap property after adding an element
 		private void HeapifyUp(int index)
@@ -200,7 +225,6 @@ namespace ClinicQueueManagement.Data
 		public string PatientName { get; set; }
 		public DateTime AppointmentTime { get; set; }
 		public bool IsCompleted { get; set; }
-
 		public int RoomNumber { get; set; }
 	}
 }

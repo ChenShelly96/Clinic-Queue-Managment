@@ -61,10 +61,33 @@ namespace ClinicQueueManagement
 			_dailyCleanupTimer.Interval = TimeSpan.FromHours(24);
 		}
 
-		private void OpenClinicRoomScreenButton_Click(object sender, RoutedEventArgs e)
+		private void OpenClinicRoom1Button_Click(object sender, RoutedEventArgs e)
 		{
 			// Pass the room number to the ClinicRoomScreen
-			int roomNumber = 1;  // For example, room 1
+			//int roomNumber = 1;  // For example, room 1
+			//ClinicRoomScreen clinicRoomScreen = new ClinicRoomScreen(_queueManager, roomNumber);
+			//clinicRoomScreen.Show();
+			OpenClinicRoomScreen(1);
+		}
+
+		private void OpenClinicRoom2Button_Click(object sender, RoutedEventArgs e)
+		{
+			OpenClinicRoomScreen(2);
+		}
+
+		private void OpenClinicRoom3Button_Click(object sender, RoutedEventArgs e)
+		{
+			OpenClinicRoomScreen(3);
+		}
+
+		private void OpenClinicRoom4Button_Click(object sender, RoutedEventArgs e)
+		{
+			OpenClinicRoomScreen(4);
+		}
+
+
+		private void OpenClinicRoomScreen(int roomNumber)
+		{
 			ClinicRoomScreen clinicRoomScreen = new ClinicRoomScreen(_queueManager, roomNumber);
 			clinicRoomScreen.Show();
 		}

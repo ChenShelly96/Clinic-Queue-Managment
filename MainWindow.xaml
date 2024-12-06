@@ -9,7 +9,9 @@
     <Grid>
         <Button Content="Add Appointment" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="50" Click="AddAppointmentButton_Click"/>
         <Button Content="Open Waiting Room Screen" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,60,0,0" Width="150" Height="50" Click="OpenWaitingRoomScreenButton_Click"/>
-        <Button Content="Open Clinic Room Screen" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,120,0,0" Width="150" Height="50" Click="OpenClinicRoomScreenButton_Click"/>
-
+        <Button Content="Clinic Room 1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,120,0,0" Width="150" Height="50" Click="OpenClinicRoom1Button_Click"/>
+        <Button Content="Clinic Room 2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,180,0,0" Width="150" Height="50" Click="OpenClinicRoom2Button_Click"/>
+        <Button Content="Clinic Room 3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,240,0,0" Width="150" Height="50" Click="OpenClinicRoom3Button_Click"/>
+        <Button Content="Clinic Room 4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,300,0,0" Width="150" Height="50" Click="OpenClinicRoom4Button_Click"/>
     </Grid>
 </Window>

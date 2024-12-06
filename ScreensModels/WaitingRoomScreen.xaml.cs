@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -11,7 +12,7 @@ namespace ClinicQueueManagement.ScreensModels
 	{
 		private QueueManager _queueManager;
 		private DispatcherTimer _queueRefreshTimer; // Timer to refresh the queue every 10 seconds
-		private DispatcherTimer _clockTimer; // Timer to update the clock every second
+		private DispatcherTimer _clockTimer;       // Timer to update the clock every second
 
 		public WaitingRoomScreen(QueueManager queueManager)
 		{
@@ -22,14 +23,18 @@ namespace ClinicQueueManagement.ScreensModels
 			LoadAppointments();
 
 			// Set up the timer to refresh the queue every 10 seconds
-			_queueRefreshTimer = new DispatcherTimer();
-			_queueRefreshTimer.Interval = TimeSpan.FromSeconds(10); // Set interval to 10 seconds
+			_queueRefreshTimer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromSeconds(10) // Set interval to 10 seconds
+			};
 			_queueRefreshTimer.Tick += QueueRefreshTimer_Tick; // Add event handler for the timer tick
 			_queueRefreshTimer.Start(); // Start the timer
 
 			// Set up the timer for the digital clock
-			_clockTimer = new DispatcherTimer();
-			_clockTimer.Interval = TimeSpan.FromSeconds(1); // Set interval to 1 second
+			_clockTimer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromSeconds(1) // Set interval to 1 second
+			};
 			_clockTimer.Tick += ClockTimer_Tick; // Add event handler for the clock timer
 			_clockTimer.Start(); // Start the clock timer
 		}
@@ -57,8 +62,6 @@ namespace ClinicQueueManagement.ScreensModels
 		// Load the next 20 appointments from the Min-Heap (priority queue) and display them per clinic
 		private void LoadAppointments()
 		{
-
-
 			// Clear existing items in the Clinic 1 DataGrid
 			Clinic1DataGrid.ItemsSource = null;
 
@@ -67,8 +70,6 @@ namespace ClinicQueueManagement.ScreensModels
 
 			// Bind the appointment list to the DataGrid
 			Clinic1DataGrid.ItemsSource = nextAppointments;
-
-			
 		}
 
 		// Refresh button to reload the queue manually
@@ -76,20 +77,74 @@ namespace ClinicQueueManagement.ScreensModels
 		{
 			LoadAppointments();
 		}
+		// Update the "Now" section with the next appointment for each room
+		private void UpdateNowSection()
+		{
+			// Get the list of next appointments and group them by room number
+			List<Appointment> nextAppointments = _queueManager.GetNextAppointments();
 
+			// Group appointments by room number
+			var groupedAppointments = nextAppointments
+				.Where(a => !a.IsCompleted)
+				.GroupBy(a => a.RoomNumber)
+				.ToDictionary(g => g.Key, g => g.OrderBy(a => a.AppointmentTime).FirstOrDefault());
+
+			// Update the "Now" section for each room
+			string nowText = "";
+
+			for (int roomNumber = 1; roomNumber <= 4; roomNumber++)
+			{
+				if (groupedAppointments.TryGetValue(roomNumber, out Appointment currentAppointment) && currentAppointment != null)
+				{
+					nowText += $" מספר {currentAppointment.AppointmentID} לחדר מספר  {roomNumber}  \n";
+				}
+				else
+				{
+					// Clear the "Now" section if no active appointments are available
+					NowQueueTextBlock1.Text = "";
+				}
+
+			}
+
+			// Display the updated "Now" text
+			NowQueueTextBlock1.Text = nowText.TrimEnd();
+		}
+
+		/*
 		// Update the "Now" section with the next appointment to be called
 		private void UpdateNowSection()
 		{
-			Appointment nextAppointment = _queueManager.RemoveEarliestAppointment();
+			// Get the list of next appointments and find the one with the earliest time
+			List<Appointment> nextAppointments = _queueManager.GetNextAppointments();
 
-			if (nextAppointment != null)
+			// Find the appointment with the earliest time that is not completed
+			Appointment earliestAppointment = null;
+			foreach (var appointment in nextAppointments)
 			{
-				// Assuming that appointments with ID in a specific range belong to Clinic 1 or Clinic 2
-				string clinicName = (nextAppointment.AppointmentID % 2 == 0) ? "1" : "2";
-
-				// Update the NowQueueTextBlock with the patient's number and the clinic
-				NowQueueTextBlock.Text = $"מספר {nextAppointment.AppointmentID} לחדר מספר {nextAppointment.RoomNumber}";
+				if (!appointment.IsCompleted)
+				{
+					if (earliestAppointment == null || appointment.AppointmentTime < earliestAppointment.AppointmentTime)
+					{
+						earliestAppointment = appointment;
+					}
+				}
 			}
-		}
+
+			if (earliestAppointment != null)
+			{
+				// Retrieve the room number from the database using the latest information
+				int roomNumber = earliestAppointment.RoomNumber;
+
+				// Update the NowQueueTextBlock1 with the patient's queue number and room number
+				NowQueueTextBlock1.Text = $"מספר {earliestAppointment.AppointmentID} לחדר מספר {roomNumber}";
+			}
+			else
+			{
+				// Clear the "Now" section if no active appointments are available
+				NowQueueTextBlock1.Text = "אין תורים פעילים כרגע";
+			}
+		}*/
+
+
 	}
 }

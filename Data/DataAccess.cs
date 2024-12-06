@@ -65,7 +65,7 @@ namespace ClinicQueueManagement.Data
 				connection.Open();
 
 				// SQL query to select appointments for today
-				string query = "SELECT AppointmentID, PatientName, AppointmentTime, IsCompleted FROM Appointments WHERE CAST(AppointmentTime AS DATE) = CAST(GETDATE() AS DATE)";
+				string query = "SELECT AppointmentID, PatientName, AppointmentTime, IsCompleted, RoomNumber FROM Appointments WHERE CAST(AppointmentTime AS DATE) = CAST(GETDATE() AS DATE)";
 
 				using (SqlCommand command = new SqlCommand(query, connection))
 				{
@@ -78,7 +78,8 @@ namespace ClinicQueueManagement.Data
 								AppointmentID = (int)reader["AppointmentID"],
 								PatientName = (string)reader["PatientName"],
 								AppointmentTime = (DateTime)reader["AppointmentTime"],
-								IsCompleted = (bool)reader["IsCompleted"]
+								IsCompleted = (bool)reader["IsCompleted"],
+								RoomNumber = (int)reader["RoomNumber"]
 							};
 
 							appointments.Add(appointment); // Add each appointment to the list
@@ -121,10 +122,10 @@ namespace ClinicQueueManagement.Data
 		}
 
 		// Method to remove an appointment from the database
-		public static void RemoveAppointmentFromDatabase(int appointmentId)
+		public void RemoveAppointmentFromDatabase(int appointmentId)
 		{
-			string connectionString = "your_connection_string_here";
-			using (SqlConnection connection = new SqlConnection(connectionString))
+			//string connectionString = "your_connection_string_here";
+			using (SqlConnection connection = new SqlConnection(_connectionString))
 			{
 				connection.Open();
 				string query = "DELETE FROM Appointments WHERE AppointmentID = @AppointmentID";
@@ -135,6 +136,65 @@ namespace ClinicQueueManagement.Data
 				}
 			}
 		}
+
+		// Method to check if an appointment number already exists in the database
+		public bool AppointmentNumberExistsInDatabase(int appointmentNumber)
+		{
+			bool exists = false;
+
+			using (SqlConnection connection = new SqlConnection(_connectionString))
+			{
+				connection.Open();
+
+				string query = "SELECT COUNT(*) FROM Appointments WHERE AppointmentID = @AppointmentID";
+
+				using (SqlCommand command = new SqlCommand(query, connection))
+				{
+					command.Parameters.AddWithValue("@AppointmentID", appointmentNumber);
+
+					int count = (int)command.ExecuteScalar();
+					exists = count > 0;
+				}
+			}
+
+			return exists;
+		}
+
+
+		// Method to get an appointment by number from the database
+		public Appointment GetAppointmentByNumber(int appointmentNumber)
+		{
+			using (SqlConnection connection = new SqlConnection(_connectionString))
+			{
+				connection.Open();
+
+				string query = "SELECT AppointmentID, PatientName, AppointmentTime, IsCompleted, RoomNumber " +
+							   "FROM Appointments WHERE AppointmentID = @AppointmentID";
+
+				using (SqlCommand command = new SqlCommand(query, connection))
+				{
+					command.Parameters.AddWithValue("@AppointmentID", appointmentNumber);
+
+					using (SqlDataReader reader = command.ExecuteReader())
+					{
+						if (reader.Read())
+						{
+							return new Appointment
+							{
+								AppointmentID = (int)reader["AppointmentID"],
+								PatientName = (string)reader["PatientName"],
+								AppointmentTime = (DateTime)reader["AppointmentTime"],
+								IsCompleted = (bool)reader["IsCompleted"],
+								RoomNumber = (int)reader["RoomNumber"]
+							};
+						}
+					}
+				}
+			}
+
+			return null; // Return null if no matching appointment is found
+		}
+
 
 	}
 

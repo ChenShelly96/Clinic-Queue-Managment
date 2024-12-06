@@ -23,14 +23,7 @@
                      Height="23" 
                    />
            
-           <TextBox x:Name="RoomNumTextBox" 
-              HorizontalAlignment="Left" 
-              Margin="260,154,0,0" 
-              TextWrapping="Wrap" Text="0" 
-              VerticalAlignment="Top" 
-              Width="65" 
-              Height="23" 
-             />
+         
   <Button Content="חדר 1" 
                     HorizontalAlignment="Left" 
                     Margin="160,219,0,0" 

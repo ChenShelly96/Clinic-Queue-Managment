@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace ClinicQueueManagement.ScreensModels
 {
@@ -9,14 +10,40 @@ namespace ClinicQueueManagement.ScreensModels
 	{
 		private QueueManager _queueManager;
 		private Appointment _currentAppointment;
+		private DispatcherTimer _autoRefreshTimer; // Timer for automatic refresh
+		private int _roomNumber; // Room number associated with this screen
 
 		public ClinicRoomScreen(QueueManager queueManager, int roomNumber)
 		{
 			InitializeComponent();
 			_queueManager = queueManager;
+			_roomNumber = roomNumber;
+
 			LoadAppointmentsForRoom(roomNumber);
+
+			// Subscribe to the AppointmentsUpdated event in QueueManager
+			_queueManager.AppointmentsUpdated += OnAppointmentsUpdated;
+
+			// Set up an auto-refresh timer to refresh the data every few seconds
+			SetAutoRefreshTimer();
 		}
 
+
+		// Set up a timer for automatic refresh
+		private void SetAutoRefreshTimer()
+		{
+			_autoRefreshTimer = new DispatcherTimer();
+			_autoRefreshTimer.Interval = TimeSpan.FromSeconds(5); // Refresh every 5 seconds
+			_autoRefreshTimer.Tick += (sender, e) => LoadAppointmentsForRoom(_roomNumber);
+			_autoRefreshTimer.Start();
+		}
+
+		// Event handler for AppointmentsUpdated event
+		private void OnAppointmentsUpdated()
+		{
+			// Refresh appointments for the current room
+			Dispatcher.Invoke(() => LoadAppointmentsForRoom(_roomNumber));
+		}
 		// Load appointments for the specific room from the database and bind to the DataGrid
 		private void LoadAppointmentsForRoom(int roomNumber)
 		{

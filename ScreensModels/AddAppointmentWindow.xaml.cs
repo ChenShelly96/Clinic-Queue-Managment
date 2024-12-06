@@ -24,8 +24,9 @@ namespace ClinicQueueManagement
 			if (ValidateTime(inputTime))  // Validate the time input
 			{
 				DateTime appointmentTime = DateTime.Parse(inputTime);
-				
-				int appointmentNumber = CalculateAppointmentNumber(appointmentTime);
+
+				//int appointmentNumber = CalculateAppointmentNumber(appointmentTime);
+				int appointmentNumber = _queueManager.GenerateAppointmentNumber(roomNumber,appointmentTime);
 				// Create a new appointment object
 				Appointment newAppointment = new Appointment
 				{
@@ -77,15 +78,30 @@ namespace ClinicQueueManagement
 			return DateTime.TryParse(time, out _);  // Simple validation, could be extended
 		}
 
-	
-
 		// Method to calculate appointment number based on time
 		private int CalculateAppointmentNumber(DateTime appointmentTime)
 		{
 			DateTime startOfDay = new DateTime(appointmentTime.Year, appointmentTime.Month, appointmentTime.Day, 8, 0, 0); // Start at 08:00 AM
 			TimeSpan timeDifference = appointmentTime - startOfDay;
-			int appointmentNumber = 100 + (int)(timeDifference.TotalMinutes / 5);  // Increment by 1 every 5 minutes
-			return appointmentNumber;
+			int baseAppointmentNumber = 100 + (int)(timeDifference.TotalMinutes / 1);  // Increment by 1 every 1 minute
+
+			// Check if an appointment with this number already exists
+			var existingAppointment = _dataAccess.GetAppointmentByNumber(baseAppointmentNumber);
+
+			if (existingAppointment != null)
+			{
+				// Compare the times and adjust the number accordingly
+				if (existingAppointment.AppointmentTime > appointmentTime)
+				{
+					baseAppointmentNumber--; // Assign a smaller number if the existing appointment is later
+				}
+				else if (existingAppointment.AppointmentTime < appointmentTime)
+				{
+					baseAppointmentNumber++; // Assign a larger number if the existing appointment is earlier
+				}
+			}
+
+			return baseAppointmentNumber;
 		}
 	}
 }
